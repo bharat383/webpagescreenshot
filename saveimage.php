@@ -1,16 +1,30 @@
 <?php
-$filteredData=substr($_POST['image_code'], strpos($_POST['image_code'], ",")+1);
 
-//Decode the string
-$unencodedData=base64_decode($filteredData);
+class Screenshot 
+{
+	function SaveScreenshot()
+	{
+		$filteredData=substr($_POST['image_code'], strpos($_POST['image_code'], ",")+1);
 
-//Save the image
-//file_put_contents('img.png', $unencodedData);
-$file_path="screenshot/";
+		//Decode the string
+		$unencodedData=base64_decode($filteredData);
 
-$filename = date("YmdHis").".png";
+		//Save the image
+		if(!file_exists("screenshot/")) {mkdir("screenshot");}
+		$file_path="screenshot/";
 
-array_map('unlink', glob($file_path."/*.png"));
-file_put_contents($file_path."/".$filename, $unencodedData);
-echo "downloadimage.php?file=".$filename;
+		$filename = date("YmdHis").".png";
+
+		array_map('unlink', glob($file_path."/*.png"));
+		file_put_contents($file_path."/".$filename, $unencodedData);
+		echo "downloadimage.php?file=".$filename;		
+	}
+
+}
+
+$Screenshot  = new Screenshot();
+if(isset($_REQUEST['image_code']) && $_REQUEST['image_code']!="")
+{
+	$Screenshot->SaveScreenshot();
+}
 ?>
